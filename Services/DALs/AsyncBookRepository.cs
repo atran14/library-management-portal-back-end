@@ -7,7 +7,7 @@ using back_end.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace back_end.DALs
+namespace back_end.Services.DALs
 {
     public class AsyncBookRepository : AsyncDbContextRepository<Book>, IAsyncBookRepository
     {

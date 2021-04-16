@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using back_end.DatabaseContexts;
 using back_end.Models;
-using back_end.DALs;
+using back_end.Services.DALs;
 
 namespace back_end.Controllers
 {

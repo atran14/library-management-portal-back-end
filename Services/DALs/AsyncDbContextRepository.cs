@@ -6,7 +6,7 @@ using back_end.DatabaseContexts;
 using back_end.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace back_end.DALs
+namespace back_end.Services.DALs
 {
     public abstract class AsyncDbContextRepository<TEntity> : IAsyncGenericRepository<TEntity>, IDisposable
         where TEntity : class, IEntity

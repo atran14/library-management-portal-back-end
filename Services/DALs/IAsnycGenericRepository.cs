@@ -2,7 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using back_end.Models;
 
-namespace back_end.DALs
+namespace back_end.Services.DALs
 {
     public interface IAsyncGenericRepository<TEntity>
     {

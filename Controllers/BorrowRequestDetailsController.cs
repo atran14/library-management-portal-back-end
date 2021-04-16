@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using back_end.DatabaseContexts;
 using back_end.Models;
 using System.Data;
-using back_end.DALs;
+using back_end.Services.DALs;
 
 namespace back_end.Controllers
 {
