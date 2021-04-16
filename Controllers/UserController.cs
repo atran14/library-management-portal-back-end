@@ -89,9 +89,9 @@ namespace back_end.Controllers
             {
                 await _repository.Delete(id);
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
             return NoContent();
         }

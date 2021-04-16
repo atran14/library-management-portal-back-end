@@ -11,7 +11,8 @@ namespace back_end.Services.DALs
     public abstract class AsyncDbContextRepository<TEntity> : IAsyncGenericRepository<TEntity>, IDisposable
         where TEntity : class, IEntity
     {
-        private readonly LibraryContext _context;
+        private protected readonly LibraryContext _context;
+        
         public AsyncDbContextRepository(LibraryContext context)
         {
             _context = context;
@@ -27,7 +28,7 @@ namespace back_end.Services.DALs
             return await GetAll().FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task Create(TEntity entity)
+        public virtual async Task Create(TEntity entity)
         {
             await _context.Set<TEntity>().AddAsync(entity);
             await _context.SaveChangesAsync();
@@ -43,7 +44,7 @@ namespace back_end.Services.DALs
             await _context.SaveChangesAsync();
         }
 
-        public async Task Update(int id, TEntity entity)
+        public virtual async Task Update(int id, TEntity entity)
         {
             if (entity.Id != id)
             {

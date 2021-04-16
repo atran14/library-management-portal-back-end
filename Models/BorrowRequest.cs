@@ -7,7 +7,6 @@ namespace back_end.Models
     public class BorrowRequest : IEntity
     {
         public int Id { get; set; }
-        public int BorrowRequestDetailsId { get; set; }
         public List<BorrowRequestDetails> BorrowRequestDetails { get; set; }
         public DateTime BorrowRequestDate { get; set; }
         public DateTime? BorrowUntilDate { get; set; }

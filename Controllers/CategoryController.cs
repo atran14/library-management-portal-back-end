@@ -57,11 +57,11 @@ namespace back_end.Controllers
             {
                 if (e.InnerException == null)
                 {
-                    return BadRequest();
+                    return BadRequest(e.Message);
                 }
                 else
                 {
-                    return NotFound();
+                    return NotFound(e.Message);
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -90,9 +90,9 @@ namespace back_end.Controllers
             {
                 await _repository.Delete(id);
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
             return NoContent();
         }

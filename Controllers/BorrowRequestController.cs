@@ -38,7 +38,7 @@ namespace back_end.Controllers
 
             if (borrowRequest == null)
             {
-                return NotFound();
+                return NotFound(id);
             }
 
             return borrowRequest;
@@ -57,11 +57,11 @@ namespace back_end.Controllers
             {
                 if (e.InnerException == null)
                 {
-                    return BadRequest();
+                    return BadRequest(e.Message);
                 }
                 else
                 {
-                    return NotFound();
+                    return NotFound(e.Message);
                 }
             }
             catch (DbUpdateConcurrencyException)
@@ -77,7 +77,14 @@ namespace back_end.Controllers
         [HttpPost]
         public async Task<ActionResult<BorrowRequest>> PostBorrowRequest(BorrowRequest borrowRequest)
         {
-            await _repository.Create(borrowRequest);
+            try
+            {
+                await _repository.Create(borrowRequest);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
 
             return CreatedAtAction("GetBorrowRequest", new { id = borrowRequest.Id }, borrowRequest);
         }
@@ -90,9 +97,9 @@ namespace back_end.Controllers
             {
                 await _repository.Delete(id);
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
-                return NotFound();
+                return NotFound(e.Message);
             }
             return NoContent();
         }
