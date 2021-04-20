@@ -6,6 +6,12 @@ namespace back_end.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<Book> Books {get; set;}
+        public virtual List<Book> Books {get; set;}
+    }
+
+    public class CategoryResponse : IEntity
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }
