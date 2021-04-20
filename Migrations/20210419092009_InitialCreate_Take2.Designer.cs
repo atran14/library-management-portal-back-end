@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using back_end.DatabaseContexts;
 
 namespace back_end.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20210419092009_InitialCreate_Take2")]
+    partial class InitialCreate_Take2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -330,7 +332,7 @@ namespace back_end.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("BorrowUntilDate")
+                    b.Property<DateTime?>("BorrowUntilDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("RequestUserId")
@@ -503,7 +505,6 @@ namespace back_end.Migrations
                     b.HasOne("back_end.Models.Category", "Category")
                         .WithMany("Books")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -518,7 +519,7 @@ namespace back_end.Migrations
                     b.HasOne("back_end.Models.User", "RequestUser")
                         .WithMany("BorrowRequests")
                         .HasForeignKey("RequestUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("ActionByUser");
@@ -531,13 +532,13 @@ namespace back_end.Migrations
                     b.HasOne("back_end.Models.BorrowRequest", "BorrowRequest")
                         .WithMany("BorrowRequestDetails")
                         .HasForeignKey("BorrowRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("back_end.Models.Book", "RequestedBook")
                         .WithMany("BorrowRequestDetails")
                         .HasForeignKey("RequestedBookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.Navigation("BorrowRequest");

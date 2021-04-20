@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace back_end.Migrations
 {
-    public partial class Reset : Migration
+    public partial class InitialCreate_Take2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,7 +66,6 @@ namespace back_end.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BorrowRequestDetailsId = table.Column<int>(type: "int", nullable: false),
                     BorrowRequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BorrowUntilDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RequestUserId = table.Column<int>(type: "int", nullable: false),
@@ -115,6 +114,73 @@ namespace back_end.Migrations
                         principalTable: "BorrowRequest",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Category",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Action and Adventure" },
+                    { 2, "Classics" },
+                    { 3, "Comic Book/Graphic Novel" },
+                    { 4, "Detective and Mystery" },
+                    { 5, "Fantasy" },
+                    { 6, "Historical Fiction" },
+                    { 7, "Horror" },
+                    { 8, "Literary Fiction" },
+                    { 9, "Science Fiction" },
+                    { 10, "Short Stories" },
+                    { 11, "Suspense and Thrillers" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "Id", "DOB", "FirstName", "LastName", "Password", "Username" },
+                values: new object[] { 1, new DateTime(1980, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin", "admin", "12345", "admin" });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "Id", "DOB", "FirstName", "LastName", "Password", "Role", "Username" },
+                values: new object[] { 2, new DateTime(1997, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Bob", "McFarland", "bob97", 1, "bob97" });
+
+            migrationBuilder.InsertData(
+                table: "Book",
+                columns: new[] { "Id", "Authors", "CategoryId", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Yann Martel", 1, "Generic description", "Life of Pi" },
+                    { 30, "Junot Diaz", 11, "Generic description", "This Is How You Lose Her" },
+                    { 29, "George Orwell", 10, "Generic description", "1984" },
+                    { 28, "Suzanne Collins", 10, "Generic description", "The Hunger Games Trilogy" },
+                    { 27, "Margaret Atwood", 10, "Generic description", "The Testaments" },
+                    { 26, "J. R. Ward", 9, "Generic description", "The Savior" },
+                    { 25, "Jasmine Guillory", 9, "Generic description", "Royal Holiday" },
+                    { 24, "Sarah MacLean", 9, "Generic description", "Brazen and the Beast" },
+                    { 23, "Ann Patchett", 8, "Generic description", "The Dutch House" },
+                    { 22, "Elizabeth Strout", 8, "Generic description", "Olive, Again" },
+                    { 21, "Delia Owens", 8, "Generic description", "Where the Crawdads Sing" },
+                    { 20, "Josh Malerman", 7, "Generic description", "Bird Box" },
+                    { 19, "Shirley Jackson", 7, "Generic description", "The Haunting of Hill House" },
+                    { 18, "Stephen King", 7, "Generic description", "Carrie" },
+                    { 17, "Arthur Golden", 6, "Generic description", "Memoirs of a Geisha" },
+                    { 16, "Gabriel Garcia Marquez", 6, "Generic description", "One Hundred Years of Solitude" },
+                    { 15, "Kathryn Stockett", 6, "Generic description", "The Help" },
+                    { 14, "Leigh Bardugo", 5, "Generic description", "Ninth House" },
+                    { 13, "Madeline Miller", 5, "Generic description", "Circe" },
+                    { 12, "Ta-Nehisi Coates", 5, "Generic description", "The Water Dancer" },
+                    { 11, "Agatha Christie", 4, "Generic description", "And Then There Were None" },
+                    { 10, "Sir Arthur Conan Doyle", 4, "Generic description", "The Adventures of Sherlock Holmes" },
+                    { 9, "Michael Connelly", 4, "Generic description", "The Night Fire" },
+                    { 8, "Charlie Mackery", 3, "Generic description", "The Boy, the Mole, the Fox and the Horse" },
+                    { 7, "Alan Moore, Dave Gibbons", 3, "Generic description", "Watchmen" },
+                    { 6, "Toni Morrison", 2, "Generic description", "Beloved" },
+                    { 5, "Louisa May Alcott", 2, "Generic description", "Little Women" },
+                    { 4, "Harper Lee", 2, "Generic description", "To Kill a Mockingbird" },
+                    { 3, "Jack London", 1, "Generic description", "The Call of the Wild" },
+                    { 2, "Alexandre Dumas", 1, "Generic description", "The Three Musketeers" },
+                    { 31, "Lauren Groff", 11, "Generic description", "Florida" },
+                    { 32, "N. K. Jemisin", 11, "Generic description", "How Long 'Til Black Future Month?" }
                 });
 
             migrationBuilder.CreateIndex(

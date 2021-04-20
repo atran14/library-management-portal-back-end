@@ -1,4 +1,5 @@
 using System;
+using back_end.DatabaseContexts.Extensions;
 using back_end.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,7 @@ namespace back_end.DatabaseContexts
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            options.UseLazyLoadingProxies();
             options.UseSqlServer("Server=localhost;Database=library-db;Trusted_Connection=True;");
         }
 
@@ -37,7 +39,7 @@ namespace back_end.DatabaseContexts
             builder.Entity<Book>()
                 .HasMany(b => b.BorrowRequestDetails)
                 .WithOne(brd => brd.RequestedBook)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
             #endregion
 
             #region Category entity configurations
@@ -48,7 +50,7 @@ namespace back_end.DatabaseContexts
             builder.Entity<Category>()
                 .HasMany(c => c.Books)
                 .WithOne(p => p.Category)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.Cascade);
             #endregion
 
             #region User entity configurations
@@ -79,14 +81,14 @@ namespace back_end.DatabaseContexts
             builder.Entity<User>()
                 .HasMany(u => u.BorrowRequests)
                 .WithOne(br => br.RequestUser)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
             #endregion            
 
             #region Borrow Request Details configurations
             builder.Entity<BorrowRequestDetails>()
                 .HasOne(brd => brd.RequestedBook)
                 .WithMany(b => b.BorrowRequestDetails)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
             #endregion
 
             #region Borrow Request configurations
@@ -99,14 +101,20 @@ namespace back_end.DatabaseContexts
                 .ValueGeneratedOnAdd();
 
             builder.Entity<BorrowRequest>()
-                .Property(br => br.ActionStatus)                
+                .Property(br => br.BorrowUntilDate)
+                .IsRequired();
+
+            builder.Entity<BorrowRequest>()
+                .Property(br => br.ActionStatus)
                 .HasDefaultValue(BorrowRequestStatus.Pending);
-                
+
             builder.Entity<BorrowRequest>()
                 .HasMany(br => br.BorrowRequestDetails)
                 .WithOne(brd => brd.BorrowRequest)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
             #endregion
+
+            builder.Seed();
         }
     }
 }
