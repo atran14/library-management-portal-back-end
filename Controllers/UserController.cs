@@ -24,14 +24,22 @@ namespace back_end.Controllers
 
         // GET: api/User
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public async Task<ActionResult<IEnumerable<UserResponse>>> GetUser()
         {
-            return await _repository.GetAll().ToListAsync();
+            return await _repository.GetAll()
+                .Select(u => new UserResponse
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    DOB = u.DOB
+                })
+                .ToListAsync();
         }
 
         // GET: api/User/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<UserResponse>> GetUser(int id)
         {
             var user = await _repository.GetById(id);
 
@@ -40,7 +48,14 @@ namespace back_end.Controllers
                 return NotFound();
             }
 
-            return user;
+            var userResponse = new UserResponse
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                DOB = user.DOB
+            };
+            return userResponse;
         }
 
         // PUT: api/User/5
@@ -74,7 +89,7 @@ namespace back_end.Controllers
         // POST: api/User
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<UserResponse>> PostUser(User user)
         {
             await _repository.Create(user);
 

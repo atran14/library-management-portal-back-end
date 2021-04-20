@@ -25,9 +25,15 @@ namespace back_end.Controllers
 
         // GET: api/Category
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
+        public async Task<ActionResult<IEnumerable<CategoryResponse>>> GetCategory()
         {
-            return await _repository.GetAll().ToListAsync();
+            return await _repository.GetAll()
+                .Select(c => new CategoryResponse
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                })
+                .ToListAsync();
         }
 
         // GET: api/Category/5
@@ -41,7 +47,12 @@ namespace back_end.Controllers
                 return NotFound();
             }
 
-            return category;
+            var categoryResponse = new CategoryResponse
+            {
+                Id = category.Id,
+                Name = category.Name,
+            };
+            return Ok(categoryResponse);
         }
 
         // PUT: api/Category/5
@@ -75,7 +86,7 @@ namespace back_end.Controllers
         // POST: api/Category
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<ActionResult<CategoryResponse>> PostCategory(Category category)
         {
             await _repository.Create(category);
 

@@ -26,9 +26,17 @@ namespace back_end.Controllers
 
         // GET: api/BorrowRequestDetails
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BorrowRequestDetails>>> GetBorrowRequestDetails()
+        public async Task<ActionResult<IEnumerable<BorrowRequestDetailsResponse>>> GetBorrowRequestDetails()
         {
-            return await _repository.GetAll().ToListAsync();
+            return await _repository.GetAll()
+            .Select(brd => new BorrowRequestDetailsResponse
+            {
+                Id = brd.Id,
+                BorrowRequestId = brd.BorrowRequestId,
+                RequestedBookId = brd.RequestedBookId,
+                RequestedBook = brd.RequestedBook.Name
+            })
+            .ToListAsync();
         }
 
         // GET: api/BorrowRequestDetails/5
@@ -42,7 +50,14 @@ namespace back_end.Controllers
                 return NotFound();
             }
 
-            return Ok(borrowRequestDetails);
+            var borrowRequestDetailsResponse = new BorrowRequestDetailsResponse
+            {
+                Id = borrowRequestDetails.Id,
+                BorrowRequestId = borrowRequestDetails.BorrowRequestId,
+                RequestedBookId = borrowRequestDetails.RequestedBookId,
+                RequestedBook = borrowRequestDetails.RequestedBook.Name
+            };
+            return Ok(borrowRequestDetailsResponse);
         }
 
         // PUT: api/BorrowRequestDetails/5
@@ -76,7 +91,7 @@ namespace back_end.Controllers
         // POST: api/BorrowRequestDetails
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<BorrowRequestDetails>> PostBorrowRequestDetails(BorrowRequestDetails borrowRequestDetails)
+        public async Task<ActionResult<BorrowRequestDetailsResponse>> PostBorrowRequestDetails(BorrowRequestDetails borrowRequestDetails)
         {
             try
             {

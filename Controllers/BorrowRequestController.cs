@@ -25,14 +25,29 @@ namespace back_end.Controllers
 
         // GET: api/BorrowRequest
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BorrowRequest>>> GetBorrowRequest()
+        public async Task<ActionResult<IEnumerable<BorrowRequestResponse>>> GetBorrowRequest()
         {
-            return await _repository.GetAll().ToListAsync();
+            return await _repository.GetAll()
+                .Select(br => new BorrowRequestResponse
+                {
+                    Id = br.Id,
+                    RequestUserId = br.RequestUserId,
+                    RequestUser = $"{br.RequestUser.FirstName} {br.RequestUser.LastName}",
+                    BorrowRequestDate = br.BorrowRequestDate,
+                    BorrowUntilDate = br.BorrowUntilDate,
+                    ActionTime = br.ActionTime ?? default(DateTime),
+                    ActionByUserId = br.ActionByUserId ?? 0,
+                    ActionByUser = br.ActionByUser != null
+                                    ? $"{br.ActionByUser.FirstName} {br.ActionByUser.LastName} (super user)"
+                                    : "(waiting)",
+                    BorrowRequestDetailsIds = br.BorrowRequestDetails.Select(brd => brd.Id).ToList()
+                })
+                .ToListAsync();
         }
 
         // GET: api/BorrowRequest/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BorrowRequest>> GetBorrowRequest(int id)
+        public async Task<ActionResult<BorrowRequestResponse>> GetBorrowRequest(int id)
         {
             var borrowRequest = await _repository.GetById(id);
 
@@ -41,7 +56,21 @@ namespace back_end.Controllers
                 return NotFound(id);
             }
 
-            return borrowRequest;
+            var borrowRequestResponse = new BorrowRequestResponse
+            {
+                Id = borrowRequest.Id,
+                RequestUserId = borrowRequest.RequestUserId,
+                RequestUser = $"{borrowRequest.RequestUser.FirstName} {borrowRequest.RequestUser.LastName}",
+                BorrowRequestDate = borrowRequest.BorrowRequestDate,
+                BorrowUntilDate = borrowRequest.BorrowUntilDate,
+                ActionTime = borrowRequest.ActionTime ?? default(DateTime),
+                ActionByUserId = borrowRequest.ActionByUserId ?? 0,
+                ActionByUser = borrowRequest.ActionByUser != null
+                                ? $"{borrowRequest.ActionByUser.FirstName} {borrowRequest.ActionByUser.LastName} (super user)"
+                                : "(waiting)",
+                BorrowRequestDetailsIds = borrowRequest.BorrowRequestDetails.Select(brd => brd.Id).ToList()
+            };
+            return borrowRequestResponse;
         }
 
         // PUT: api/BorrowRequest/5
@@ -72,6 +101,7 @@ namespace back_end.Controllers
             return NoContent();
         }
 
+        //Might not actually need it, 
         // POST: api/BorrowRequest
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]

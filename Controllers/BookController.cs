@@ -25,23 +25,42 @@ namespace back_end.Controllers
 
         // GET: api/Book
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+        public async Task<ActionResult<IEnumerable<BookResponse>>> GetBooks()
         {
-            return await _repository.GetAll().ToListAsync();
+            return await _repository.GetAll()
+                .Include(b => b.Category)
+                .Select(b => new BookResponse
+                {
+                    Id = b.Id,
+                    CategoryId = b.CategoryId,
+                    Name = b.Name,
+                    Authors = b.Authors,
+                    Category = b.Category.Name,
+                    Description = b.Description
+                })
+                .ToListAsync();
         }
 
         // GET: api/Book/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(int id)
+        public async Task<ActionResult<BookResponse>> GetBook(int id)
         {
             var book = await _repository.GetById(id);
-
             if (book == null)
             {
                 return NotFound();
             }
 
-            return Ok(book);
+            var bookResponse = new BookResponse
+            {
+                Id = book.Id,
+                CategoryId = book.CategoryId,
+                Name = book.Name,
+                Authors = book.Authors,
+                Category = book.Category.Name,
+                Description = book.Description
+            };
+            return Ok(bookResponse);
         }
 
         // PUT: api/Book/5
@@ -75,7 +94,7 @@ namespace back_end.Controllers
         // POST: api/Book
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Book>> PostBook(Book book)
+        public async Task<ActionResult<BookResponse>> PostBook(Book book)
         {
             await _repository.Create(book);
 
