@@ -15,8 +15,19 @@ namespace back_end.Services.DALs
 
         public async override Task Create(BorrowRequest entity)
         {
-            ValidateBorrowRequestDetailsListState(entity);
-            await ValidateValidNumberOfRequestsForCurrentMonth(entity);
+
+            if (!ValidateBorrowRequestDetailsHasAtLeastOneBook(entity))
+            {
+                throw new ArgumentException("Borrow request must request at least 1 book");
+            }
+            if (!ValidateBorrowRequestDetailsHasAtMostFiveBook(entity))
+            {
+                throw new ArgumentException("Borrow request only allows at most 5 books per request");
+            }
+            if (!ValidateValidNumberOfRequestsForCurrentMonth(entity))
+            {
+                throw new ArgumentException("User has exceeded the allowed 3 number of requests per month");
+            }
 
             await base.Create(entity);
         }
@@ -24,16 +35,23 @@ namespace back_end.Services.DALs
 
         public async override Task Update(int id, BorrowRequest entity)
         {
-            ValidateBorrowRequestDetailsListState(entity);
+            if (!ValidateBorrowRequestDetailsHasAtLeastOneBook(entity))
+            {
+                throw new ArgumentException("Borrow request must request at least 1 book");
+            }
+            if (!ValidateBorrowRequestDetailsHasAtMostFiveBook(entity))
+            {
+                throw new ArgumentException("Borrow request only allows at most 5 books per request");
+            }
+
             await base.Update(id, entity);
         }
 
-        private async Task ValidateValidNumberOfRequestsForCurrentMonth(BorrowRequest entity)
+        private bool ValidateValidNumberOfRequestsForCurrentMonth(BorrowRequest entity)
         {
             var requestedYear = entity.BorrowRequestDate.Year;
             var requestedMonth = entity.BorrowRequestDate.Month;
-            var curMonthRequestsCount = await
-                _context.BorrowRequest
+            var curMonthRequestsCount = _context.BorrowRequest
                 .AsNoTracking()
                 .AsQueryable()
                 .Where(br => br.RequestUserId == entity.RequestUserId)
@@ -41,24 +59,18 @@ namespace back_end.Services.DALs
                     br.BorrowRequestDate.Year == requestedYear
                     && br.BorrowRequestDate.Month == requestedMonth
                 )
-                .CountAsync();
-            if (curMonthRequestsCount >= 3)
-            {
-                throw new ArgumentException("User has exceeded the alloted max. of 3 requests per month. Cannot create request.");
-            }
+                .Count();
+            return curMonthRequestsCount <= 3;
         }
 
-        private static void ValidateBorrowRequestDetailsListState(BorrowRequest entity)
+        private bool ValidateBorrowRequestDetailsHasAtLeastOneBook(BorrowRequest br)
         {
-            if (entity.BorrowRequestDetails.Count == 0)
-            {
-                throw new ArgumentException("Borrow request must request at least 1 book");
-            }
+            return br.BorrowRequestDetails.Count > 0;
+        }
 
-            if (entity.BorrowRequestDetails.Count > 5)
-            {
-                throw new ArgumentException("Borrow request only allows at most 5 books per request");
-            }
+        private bool ValidateBorrowRequestDetailsHasAtMostFiveBook(BorrowRequest br)
+        {
+            return br.BorrowRequestDetails.Count <= 5;
         }
     }
 }

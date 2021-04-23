@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using back_end.DatabaseContexts;
 using back_end.Models;
 using back_end.Services.DALs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace back_end.Controllers
 {
+    [Authorize(Roles = "PowerUser, NormalUser")]
     [Route("api/[controller]")]
     [ApiController]
     public class BorrowRequestController : ControllerBase
@@ -75,6 +77,7 @@ namespace back_end.Controllers
 
         // PUT: api/BorrowRequest/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "PowerUser")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBorrowRequest(int id, BorrowRequest borrowRequest)
         {
@@ -101,11 +104,10 @@ namespace back_end.Controllers
             return NoContent();
         }
 
-        //Might not actually need it, 
         // POST: api/BorrowRequest
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<BorrowRequest>> PostBorrowRequest(BorrowRequest borrowRequest)
+        public async Task<ActionResult<BorrowRequestResponse>> PostBorrowRequest(BorrowRequest borrowRequest)
         {
             try
             {
@@ -120,6 +122,7 @@ namespace back_end.Controllers
         }
 
         // DELETE: api/BorrowRequest/5
+        [Authorize(Roles = "PowerUser")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBorrowRequest(int id)
         {

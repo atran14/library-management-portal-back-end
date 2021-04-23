@@ -9,9 +9,11 @@ using back_end.DatabaseContexts;
 using back_end.Models;
 using System.Data;
 using back_end.Services.DALs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace back_end.Controllers
 {
+    [Authorize(Roles = "PowerUser, NormalUser")]
     [Route("api/[controller]")]
     [ApiController]
     public class BorrowRequestDetailsController : ControllerBase
@@ -41,7 +43,7 @@ namespace back_end.Controllers
 
         // GET: api/BorrowRequestDetails/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BorrowRequestDetails>> GetBorrowRequestDetails(int id)
+        public async Task<ActionResult<BorrowRequestDetailsResponse>> GetBorrowRequestDetails(int id)
         {
             var borrowRequestDetails = await _repository.GetById(id);
 
@@ -62,6 +64,7 @@ namespace back_end.Controllers
 
         // PUT: api/BorrowRequestDetails/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "PowerUser")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBorrowRequestDetails(int id, BorrowRequestDetails borrowRequestDetails)
         {
@@ -106,6 +109,7 @@ namespace back_end.Controllers
         }
 
         // DELETE: api/BorrowRequestDetails/5
+        [Authorize(Roles = "PowerUser")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBorrowRequestDetails(int id)
         {

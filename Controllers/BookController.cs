@@ -9,9 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using back_end.DatabaseContexts;
 using back_end.Models;
 using back_end.Services.DALs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace back_end.Controllers
 {
+    [Authorize(Roles = "PowerUser, NormalUser")]
     [Route("api/[controller]")]
     [ApiController]
     public class BookController : ControllerBase
@@ -24,6 +26,7 @@ namespace back_end.Controllers
         }
 
         // GET: api/Book
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BookResponse>>> GetBooks()
         {
@@ -42,6 +45,7 @@ namespace back_end.Controllers
         }
 
         // GET: api/Book/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<BookResponse>> GetBook(int id)
         {
@@ -65,6 +69,7 @@ namespace back_end.Controllers
 
         // PUT: api/Book/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "PowerUser")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutBook(int id, Book book)
         {
@@ -93,6 +98,7 @@ namespace back_end.Controllers
 
         // POST: api/Book
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Roles = "PowerUser")]
         [HttpPost]
         public async Task<ActionResult<BookResponse>> PostBook(Book book)
         {
@@ -102,6 +108,7 @@ namespace back_end.Controllers
         }
 
         // DELETE: api/Book/5
+        [Authorize(Roles = "PowerUser")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)
         {

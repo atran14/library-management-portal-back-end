@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace back_end
 {
@@ -33,6 +35,23 @@ namespace back_end
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "back_end", Version = "v1" });
             });
+
+            services.AddCors();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie("Cookies", options =>
+                {
+                    options.Cookie.Name = "auth_cookie";
+                    options.Cookie.SameSite = SameSiteMode.Lax;
+                    options.Events = new CookieAuthenticationEvents
+                    {
+                        OnRedirectToLogin = redirectContext =>
+                        {
+                            redirectContext.HttpContext.Response.StatusCode = 401;
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
+
             services.AddDbContext<LibraryContext>();
             services.AddTransient<IAsyncBookRepository, AsyncBookRepository>();
             services.AddTransient<IAsyncUserRepository, AsyncUserRepository>();
@@ -59,6 +78,15 @@ namespace back_end
 
             app.UseRouting();
 
+            app.UseCors(policy =>
+            {
+                policy.AllowAnyHeader();
+                policy.AllowAnyMethod();
+                // policy.AllowAnyOrigin();
+                policy.AllowCredentials();
+            });
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

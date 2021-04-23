@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using back_end.DatabaseContexts;
 using back_end.Models;
 using back_end.Services.DALs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace back_end.Controllers
 {
+    [Authorize(Roles = "PowerUser, NormalUser")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase

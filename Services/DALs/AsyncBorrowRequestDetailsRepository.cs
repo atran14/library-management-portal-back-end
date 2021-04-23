@@ -13,26 +13,19 @@ namespace back_end.Services.DALs
         public AsyncBorrowRequestDetailsRepository(LibraryContext context) : base(context)
         { }
 
-        public async override Task Create(BorrowRequestDetails entity)
-        {
-            ValidateBorrowRequestDetailsListState(entity);
-
-            await base.Create(entity);
-        }
-
         public async override Task Update(int id, BorrowRequestDetails entity)
         {
-            ValidateBorrowRequestDetailsListState(entity);
+            if (!ValidateBorrowRequestDetailsListState(entity))
+            {
+                throw new ArgumentException("Associated borrow request has already maxed out 5 book for the request. Cannot update for this borrow request");
+            }
 
             await base.Update(id, entity);
         }
 
-        private static void ValidateBorrowRequestDetailsListState(BorrowRequestDetails entity)
+        private bool ValidateBorrowRequestDetailsListState(BorrowRequestDetails entity)
         {
-            if (entity.BorrowRequest.BorrowRequestDetails.Count + 1 > 5)
-            {
-                throw new ArgumentException("Associated borrow request has already maxed out 5 book for the request. Cannot update for this borrow request");
-            }
+            return entity.BorrowRequest.BorrowRequestDetails.Count + 1 <= 5;
         }
     }
 }
