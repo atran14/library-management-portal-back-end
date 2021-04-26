@@ -36,12 +36,24 @@ namespace back_end
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "back_end", Version = "v1" });
             });
 
-            services.AddCors();
+            //Important
+            services.AddCors( options => {
+                options.AddDefaultPolicy(
+                    builder => {
+                        builder.WithOrigins(
+                            "http://localhost:3000"
+                        )
+                                .AllowAnyHeader()
+                                .AllowAnyMethod()
+                                .AllowCredentials();
+                    });
+            });
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie("Cookies", options =>
                 {
                     options.Cookie.Name = "auth_cookie";
-                    options.Cookie.SameSite = SameSiteMode.Lax;
+                    options.Cookie.SameSite = SameSiteMode.None;
                     options.Events = new CookieAuthenticationEvents
                     {
                         OnRedirectToLogin = redirectContext =>
@@ -74,17 +86,16 @@ namespace back_end
                 });
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCookiePolicy(
+                new CookiePolicyOptions {
+                    Secure = CookieSecurePolicy.Always
+                }
+            );
 
-            app.UseCors(policy =>
-            {
-                policy.AllowAnyHeader();
-                policy.AllowAnyMethod();
-                // policy.AllowAnyOrigin();
-                policy.AllowCredentials();
-            });
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();

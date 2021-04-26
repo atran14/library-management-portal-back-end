@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace back_end.Controllers
 {
-    [Authorize(Roles = "PowerUser, NormalUser")]
+    // [Authorize(Roles = "PowerUser, NormalUser")]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class BorrowRequestController : ControllerBase

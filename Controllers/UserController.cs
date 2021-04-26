@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace back_end.Controllers
 {
-    [Authorize(Roles = "PowerUser")]
+    // [Authorize(Roles = "PowerUser")]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase

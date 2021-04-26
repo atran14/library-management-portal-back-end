@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace back_end.Controllers
 {
+    [AllowAnonymous]
     [Route("/api/[controller]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
@@ -57,14 +58,9 @@ namespace back_end.Controllers
             var authProperties = new AuthenticationProperties
             {
                 AllowRefresh = true,
-                // Refreshing the authentication session should be allowed.
-
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(2),
-                IssuedUtc = DateTimeOffset.UtcNow
-
-                //RedirectUri = <string>
-                // The full path or absolute URI to be used as an http 
-                // redirect response value.
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
+                IssuedUtc = DateTimeOffset.UtcNow,
+                IsPersistent = true
             };
 
             await HttpContext.SignInAsync(
@@ -72,12 +68,13 @@ namespace back_end.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-            var userResponse = new UserResponse
+            var userResponse = new LoggedInUserResponse
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                DOB = user.DOB
+                DOB = user.DOB,
+                Role = user.Role.ToString()
             };
             return Ok(userResponse);
         }
