@@ -9,9 +9,9 @@ namespace back_end.Models
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        
+
         [DataType(DataType.Date)]
-        public DateTime DOB { get; set; }        
+        public DateTime DOB { get; set; }
         public string Username { get; set; }
 
         [DataType(DataType.Password)]
@@ -26,5 +26,10 @@ namespace back_end.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DOB { get; set; }
+    }
+
+    public class LoggedInUserResponse : UserResponse
+    {
+        public string Role { get; set; }
     }
 }
